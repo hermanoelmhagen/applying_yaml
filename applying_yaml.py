@@ -48,7 +48,7 @@ def agent(filenames):
 
     print(
         f"\n\nAnd this is the full command that's being executed:\n\n\t{command_string}")
-    inp = input("\n\nAre you sure you want to run this? (Y)/(N): ").lower()
+    inp = input("\n\nAre you sure you want to run this? [Y]es/[N]o: ").lower()
 
     if inp in ["y", "yes"]:
         system(f'cmd /k "{command_string}"')
