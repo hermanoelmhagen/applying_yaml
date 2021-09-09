@@ -1,4 +1,4 @@
-import sys
+from sys import argv
 from os import listdir, system
 
 
@@ -8,27 +8,32 @@ def main(args):
     if len(args) >= 2 and args[1].lower() in avaliable_flags:
         arg = args[1].lower()
 
-        try:
-            _filename_parser(arg[1:], " ".join(sys.argv[2:]))
-        except:
-            _filename_parser(arg[1:])
+        if arg == "-kw":
+            _filename_parser(arg[1:], avaliable_flags, " ".join(args[2:]))
+        else:
+            _filename_parser(arg[1:], avaliable_flags)
 
     else:
-        help_message()
+        help_message(args[0], avaliable_flags)
 
 
-def help_message():
-    print(
-        f"Add flags when starting this script.\n\n\tPossible flags:\n\t\tpython {args[0]} -deployment\n\t\tpython {args[0]} -service\n\t\tpython {args[0]} -all\n\t\tpython {args[0]} -kw and_your_keyword_here")
+def help_message(arg, avaliable_flags):
+    print("\nAdd flags when starting this script.\n\nAvailable flags:")
+    for flag in avaliable_flags:
+        print(f"\t\tpython {arg} {flag}")
 
 
-def _filename_parser(flag, kw=None):
+def _filename_parser(flag, avaliable_flags, kw=None):
     files = listdir()
     files = [file for file in files if ".yaml" in file or ".yml" in file]
-    yaml_type = {"service": [], "deployment": [], "all": [], "kw": []}
+    yaml_type = {}
+    for flags in avaliable_flags:
+        yaml_type[flags[1:]] = []
 
     for file in files:
-        if flag in file or kw in file:
+        if flag in file and kw == None:
+            yaml_type[flag].append(file)
+        elif kw != None and kw in file:
             yaml_type[flag].append(file)
 
         yaml_type["all"].append(file)
@@ -63,5 +68,5 @@ def agent(filenames):
 
 
 if __name__ == "__main__":
-    args = sys.argv
-    main(args)
+
+    main(argv)
