@@ -20,7 +20,7 @@ def main(args):
 
 def _filename_parser(flag):
     files = listdir()
-    files = [file for file in files if ".yaml" in file]
+    files = [file for file in files if ".yaml" in file or ".yml" in file]
     yaml_type = {"service": [], "deploy": [], "all": []}
 
     for file in files:
@@ -38,13 +38,22 @@ def agent(filenames):
 
     command_string = ""
 
+    print("\nThese are the commands you will run:\n")
+
     for filename in filenames:
         command_string += f"kubectl apply -f {filename} & "
-        print(f"> kubectl apply -f {filename}")
+        print(f"\t> kubectl apply -f {filename}")
 
     command_string = command_string[:len(command_string)-3]
 
-    system(f'cmd /k "{command_string}"')
+    print(
+        f"\n\nAnd this is the full command that's being executed:\n\n\t{command_string}")
+    inp = input("\n\nAre you sure you want to run this? (Y)/(N): ").lower()
+
+    if inp == "y":
+        system(f'cmd /k "{command_string}"')
+    else:
+        print("Relaunch the program or try other flags if the command looked wrong!")
 
 
 if __name__ == "__main__":
