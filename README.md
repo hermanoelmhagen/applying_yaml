@@ -20,3 +20,11 @@ python applying_yaml.py flag
 -kw keyword_here 
 # Applies all yaml files relevant to your keyword specified in keyword_here, this might be useful if you have a specific naming schema!
 ```
+```
+-daemon 
+# Applies all yaml files relevant to daemonsets
+```
+```
+-cron 
+# Applies all yaml files related to cronjobs
+```
