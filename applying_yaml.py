@@ -3,7 +3,8 @@ from os import listdir, system
 
 
 def main(args):
-    avaliable_flags = ["-service", "-deployment", "-all", "-kw"]
+    avaliable_flags = ["-service", "-deployment",
+                       "-all", "-kw", "-daemon", "-cron"]
 
     if len(args) >= 2 and args[1].lower() in avaliable_flags:
         arg = args[1].lower()
@@ -43,13 +44,21 @@ def _filename_parser(flag, avaliable_flags, kw=None):
 
 def agent(filenames):
 
+    choice = input("Do you want to [A]pply or [C]reate?")
+    if choice.lower() == "a" or choice.lower() == "apply":
+        choice = "apply"
+    elif choice.lower() == "create" or choice.lower() == "create":
+        choice = "create"
+    else:
+        return False
+
     command_string = ""
     if len(filenames) > 0:
         print("\nThese are the commands you will run:\n")
 
         for filename in filenames:
-            command_string += f"kubectl apply -f {filename} & "
-            print(f"\t> kubectl apply -f {filename}")
+            command_string += f"kubectl {choice} -f {filename} & "
+            print(f"\t> kubectl {choice} -f {filename}")
 
         command_string = command_string[:len(command_string)-3]
 
