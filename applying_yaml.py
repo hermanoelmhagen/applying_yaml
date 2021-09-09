@@ -50,7 +50,7 @@ def agent(filenames):
         f"\n\nAnd this is the full command that's being executed:\n\n\t{command_string}")
     inp = input("\n\nAre you sure you want to run this? (Y)/(N): ").lower()
 
-    if inp == "y":
+    if inp in ["y", "yes"]:
         system(f'cmd /k "{command_string}"')
     else:
         print("Relaunch the program or try other flags if the command looked wrong!")
