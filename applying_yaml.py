@@ -36,9 +36,15 @@ def _filename_parser(flag):
 
 def agent(filenames):
 
+    command_string = ""
+
     for filename in filenames:
-        print(f"> kubectl apply -f .\\{filename}\\")
-        #system(f'cmd /k "kubectl apply -f .\\{filename}\\"')
+        command_string += f"kubectl apply -f {filename} & "
+        print(f"> kubectl apply -f {filename}")
+
+    command_string = command_string[:len(command_string)-3]
+
+    system(f'cmd /k "{command_string}"')
 
 
 if __name__ == "__main__":
