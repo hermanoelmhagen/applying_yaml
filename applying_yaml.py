@@ -3,31 +3,33 @@ from os import listdir, system
 
 
 def main(args):
-    if len(args) == 2:
-        if args[1].lower() == "-service":
-            _filename_parser("service")
-        elif args[1].lower() == "-deploy":
-            _filename_parser("deploy")
-        elif args[1].lower() == "-all":
-            _filename_parser("all")
-        else:
-            print(
-                f"Add flags when starting this script.\n\n\tPossible flags:\n\t\tpython {args[0]} -deploy\n\t\tpython {args[0]} -service\n\t\tpython {args[0]} -all\n\t\tpython {args[0]} -h/-help")
+    avaliable_flags = ["-service", "-deployment", "-all", "-kw"]
+
+    if len(args) >= 2 and args[1].lower() in avaliable_flags:
+        arg = args[1].lower()
+
+        try:
+            _filename_parser(arg[1:], " ".join(sys.argv[2:]))
+        except:
+            _filename_parser(arg[1:])
+
     else:
-        print(
-            f"Add flags when starting this script.\n\n\tPossible flags:\n\t\tpython {args[0]} -deploy\n\t\tpython {args[0]} -service\n\t\tpython {args[0]} -all\n\t\tpython {args[0]} -h/-help")
+        help_message()
 
 
-def _filename_parser(flag):
+def help_message():
+    print(
+        f"Add flags when starting this script.\n\n\tPossible flags:\n\t\tpython {args[0]} -deployment\n\t\tpython {args[0]} -service\n\t\tpython {args[0]} -all\n\t\tpython {args[0]} -kw and_your_keyword_here")
+
+
+def _filename_parser(flag, kw=None):
     files = listdir()
     files = [file for file in files if ".yaml" in file or ".yml" in file]
-    yaml_type = {"service": [], "deploy": [], "all": []}
+    yaml_type = {"service": [], "deployment": [], "all": [], "kw": []}
 
     for file in files:
-        if "service" in file:
-            yaml_type["service"].append(file)
-        else:
-            yaml_type["deploy"].append(file)
+        if flag in file or kw in file:
+            yaml_type[flag].append(file)
 
         yaml_type["all"].append(file)
 
@@ -37,26 +39,29 @@ def _filename_parser(flag):
 def agent(filenames):
 
     command_string = ""
+    if len(filenames) > 0:
+        print("\nThese are the commands you will run:\n")
 
-    print("\nThese are the commands you will run:\n")
+        for filename in filenames:
+            command_string += f"kubectl apply -f {filename} & "
+            print(f"\t> kubectl apply -f {filename}")
 
-    for filename in filenames:
-        command_string += f"kubectl apply -f {filename} & "
-        print(f"\t> kubectl apply -f {filename}")
+        command_string = command_string[:len(command_string)-3]
 
-    command_string = command_string[:len(command_string)-3]
+        print(
+            f"\n\nAnd this is the full command that's being executed:\n\n\t{command_string}")
+        inp = input(
+            "\n\nAre you sure you want to run this? [Y]es/[N]o: ").lower()
 
-    print(
-        f"\n\nAnd this is the full command that's being executed:\n\n\t{command_string}")
-    inp = input("\n\nAre you sure you want to run this? [Y]es/[N]o: ").lower()
+        if inp in ["y", "yes"]:
+            system(f'cmd /k "{command_string}"')
+        else:
+            print("Relaunch the program or try other flags if the command looked wrong!")
 
-    if inp in ["y", "yes"]:
-        system(f'cmd /k "{command_string}"')
     else:
-        print("Relaunch the program or try other flags if the command looked wrong!")
+        print("No files found matching your criteria :(")
 
 
 if __name__ == "__main__":
     args = sys.argv
-    available_flags = ["-deploy", "-service", "-all", "-h", "-help"]
     main(args)
