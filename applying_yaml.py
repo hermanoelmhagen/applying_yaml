@@ -45,9 +45,9 @@ def _filename_parser(flag, avaliable_flags, kw=None):
 def agent(filenames):
 
     choice = input("Do you want to [A]pply or [C]reate?")
-    if choice.lower() == "a" or choice.lower() == "apply":
+    if choice.lower() in ["apply", "a"]:
         choice = "apply"
-    elif choice.lower() == "create" or choice.lower() == "create":
+    elif choice.lower() in ["create", "c"]:
         choice = "create"
     else:
         return False
@@ -67,7 +67,7 @@ def agent(filenames):
         inp = input(
             "\n\nAre you sure you want to run this? [Y]es/[N]o: ").lower()
 
-        if inp in ["y", "yes"]:
+        if inp in ["yes", "y"]:
             system(f'cmd /k "{command_string}"')
         else:
             print("Relaunch the program or try other flags if the command looked wrong!")
